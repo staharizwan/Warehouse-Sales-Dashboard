@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from Backend.queries import(
     get_kpis,
@@ -31,8 +32,13 @@ def root():
     }
     
 @app.get("/api/kpis")
-def kpis():
-    result = get_kpis()
+def kpis(year:Optional[int] = None,
+         month: Optional[int] = None,
+         item_type: Optional[str] = None
+         
+        ):
+    
+    result = get_kpis(year, month, item_type)
     
     return {
         "total_warehouse_sales" : result[0],

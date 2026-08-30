@@ -4,18 +4,35 @@ from Backend.database import get_connection
 
 # KPI query
 #%%
-def get_kpis():
+def get_kpis(year = None, month = None, item_type = None):
     conn = get_connection()
     query = """
     SELECT
         SUM(warehouse_sales) AS total_warehouse_sales,
         SUM(retail_sales) AS total_retail_sales,
         SUM(retail_transfers) AS total_retail_transfers
-    FROM sales;
+    FROM sales
     """
+    params = []
+    conditions = []
     
+    if year is not None:
+        conditions.append("year = ?")
+        params.append(year)
+    
+    if month is not None:
+        conditions.append("month = ?")
+        params.append(month)
+    
+    if item_type is not None:
+        conditions.append("item_type = ?")
+        params.append(item_type)
+    
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+        
     cursor = conn.cursor()
-    cursor.execute(query)
+    cursor.execute(query, params)
     result = cursor.fetchone()
     conn.close()
     
@@ -34,7 +51,7 @@ def get_yearly_sales():
     
     FROM sales
     GROUP BY year
-    ORDER BY year;
+    ORDER BY year
     """
     cursor = conn.cursor()
     cursor.execute(query)
@@ -54,7 +71,7 @@ def get_sales_by_item_type():
         SUM(retail_sales) AS retail_sales
     FROM sales
     GROUP BY item_type
-    ORDER BY warehouse_sales DESC;
+    ORDER BY warehouse_sales DESC
     
     """
     
