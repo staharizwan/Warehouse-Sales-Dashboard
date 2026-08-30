@@ -1,6 +1,8 @@
 #%%
 from Backend.database import get_connection
 
+## To run the backend, run the follwoing....
+## uvicorn Backend.app:app --reload 
 
 # KPI query
 #%%
