@@ -46,7 +46,11 @@ useEffect(() => {
         <br></br>
         Sales and Distribution Performance Overview
       </p>
-
+      <div className="data-note">
+        <strong>Data note:</strong> Sales and transfers are reported in cases.
+        Fractional values represent partial cases based on the product's case
+        configuration; the source does not provide item-level case-size conversions.
+      </div>
       <div className="filter-section">
 
         <div className="filters">
