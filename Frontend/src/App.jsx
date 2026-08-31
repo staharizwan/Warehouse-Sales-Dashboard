@@ -1,12 +1,22 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts"
 
 function App() {
   const [kpis, setKpis] = useState(null);
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [itemType, setItemType] = useState("");
-
+  const [yearlySales, setYearlySales] = useState([])
 
 useEffect(() => {
     const params = new URLSearchParams();
@@ -32,6 +42,31 @@ useEffect(() => {
       });
 
     }, [year, month, itemType]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/yearly-sales")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Yearly sales received:", data);
+        console.log("Is array:", Array.isArray(data));
+
+        if (Array.isArray(data)) {
+          setYearlySales(data);
+        } else {
+          console.error("Expected an array but received:", data);
+          setYearlySales([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Yearly sales fetch failed:", error);
+      });
+  }, []);
 
   const formatNumber = (value) => {
     return Number(value).toLocaleString("en-US", {
@@ -148,6 +183,48 @@ useEffect(() => {
       ) : (
         <p>Loading dashboard...</p>
       )}
+
+     <div>
+        <div className="chart-card">
+          <h2>Sales Volume by Year</h2>
+
+          {yearlySales.length > 0 ? (
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart data={yearlySales}>
+                <CartesianGrid strokeDasharray="3 3" />
+
+                <XAxis dataKey="year" />
+
+                <YAxis />
+
+                <Tooltip />
+
+                <Legend />
+
+                <Line
+                  type="monotone"
+                  dataKey="warehouse_sales"
+                  name="Warehouse Sales"
+                  stroke="#38bdf8"
+                  strokeWidth={3}
+                />
+
+                <Line
+                  type="monotone"
+                  dataKey="retail_sales"
+                  name="Retail Sales"
+                  stroke="#14b8a6"
+                  strokeWidth={3}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p>Loading chart...</p>
+          )}
+        </div>
+     </div>
+    
+
     </div>
   );
 }

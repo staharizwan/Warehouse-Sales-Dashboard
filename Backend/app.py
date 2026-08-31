@@ -46,15 +46,15 @@ def kpis(year:Optional[int] = None,
         "total_retail_transfers" : result[2]
     }
     
-@app.get("/api/item_types")
-def item_types():
-    result = get_yearly_sales
+@app.get("/api/yearly-sales")
+def yearly_sales():
+    result = get_yearly_sales()
     
     return[
         {
             "year" : row[0],
             "warehouse_sales": row[1],
-            "retail_sales": row[3]
+            "retail_sales": row[2]
         }
         
         for row in result
