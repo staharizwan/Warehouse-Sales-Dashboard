@@ -2,6 +2,10 @@
 import sqlite3
 from pathlib import Path
 
+
+## Data source: https://www.kaggle.com/datasets/lalit7881/warehouse-and-retail-sales/data
+
+
 import pandas as pd
 print("done")
 #%%
