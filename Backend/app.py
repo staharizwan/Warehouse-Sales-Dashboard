@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from Backend.queries import(
     get_kpis,
     get_sales_by_item_type,
-    get_yearly_sales
+    get_yearly_sales,
+    get_sales_trend
 )
 
 # FASTAPI app
@@ -69,6 +70,22 @@ def item_types():
             "item_type": row[0],
             "warehouse_sales" : row[1],
             "retail_sales": row[2]
+        }
+        for row in result
+    ]
+    
+@app.get("/api/sales-trend")
+def sales_trend(
+    year: Optional[int] = None,
+    month : Optional[int] = None,
+    item_type : Optional[str] = None
+    ):
+    result = get_sales_trend(year, month, item_type)
+    return [
+        {
+            "period" : row[0],
+            "warehouse_sales" : row[1],
+            "retail_sales" : row[2]
         }
         for row in result
     ]

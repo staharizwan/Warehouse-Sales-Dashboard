@@ -43,8 +43,25 @@ useEffect(() => {
 
     }, [year, month, itemType]);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/yearly-sales")
+useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (year) {
+      params.append("year", year);
+    }
+
+    if (month) {
+      params.append("month", month);
+    }
+
+    if (itemType) {
+      params.append("item_type", itemType);
+    }
+
+    const url =
+      `http://127.0.0.1:8000/api/sales-trend?${params.toString()}`;
+
+    fetch(url)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`);
@@ -53,20 +70,15 @@ useEffect(() => {
         return response.json();
       })
       .then((data) => {
-        console.log("Yearly sales received:", data);
-        console.log("Is array:", Array.isArray(data));
-
-        if (Array.isArray(data)) {
-          setYearlySales(data);
-        } else {
-          console.error("Expected an array but received:", data);
-          setYearlySales([]);
-        }
+        console.log("Sales trend data:", data);
+        setYearlySales(data);
       })
       .catch((error) => {
-        console.error("Yearly sales fetch failed:", error);
+        console.error("Sales trend fetch failed:", error);
+        setYearlySales([]);
       });
-  }, []);
+
+    }, [year, month, itemType]);
 
   const formatNumber = (value) => {
     return Number(value).toLocaleString("en-US", {
@@ -185,19 +197,73 @@ useEffect(() => {
       )}
 
      <div>
-        <div className="chart-card">
-          <h2>Sales Volume by Year</h2>
+       <div className="chart-card">
+
+          <h2>
+            {year
+              ? `Monthly Sales Volume — ${year}`
+              : "Sales Volume by Year"}
+          </h2>
 
           {yearlySales.length > 0 ? (
+
             <ResponsiveContainer width="100%" height={350}>
+
               <LineChart data={yearlySales}>
+
                 <CartesianGrid strokeDasharray="3 3" />
 
-                <XAxis dataKey="year" />
+                <XAxis
+                  dataKey="period"
+                  tickFormatter={(value) => {
+                    if (year) {
+                      const months = [
+                        "Jan", "Feb", "Mar", "Apr",
+                        "May", "Jun", "Jul", "Aug",
+                        "Sep", "Oct", "Nov", "Dec"
+                      ];
 
-                <YAxis />
+                      return months[value - 1];
+                    }
 
-                <Tooltip />
+                    return value;
+                  }}
+                />
+
+                <YAxis
+                  tickFormatter={(value) => {
+                    if (Math.abs(value) >= 1000000) {
+                      return `${(value / 1000000).toFixed(1)}M`;
+                    }
+
+                    if (Math.abs(value) >= 1000) {
+                      return `${(value / 1000).toFixed(0)}K`;
+                    }
+
+                    return value;
+                  }}
+                />
+
+                <Tooltip
+                    contentStyle={{
+                    backgroundColor: "#1e293b",
+                    border: "1px solid #475569",
+                    borderRadius: "8px",
+                    color: "#f8fafc",
+                  }}
+                  labelStyle={{
+                    color: "#f8fafc",
+                    fontWeight: "600",
+                  }}
+                  itemStyle={{
+                    color: "#e2e8f0",
+                  }}
+                  formatter={(value) =>
+                    `${Number(value).toLocaleString("en-US", {
+                      maximumFractionDigits: 2,
+                    })} cases`
+                  }
+                />
 
                 <Legend />
 
@@ -216,12 +282,19 @@ useEffect(() => {
                   stroke="#14b8a6"
                   strokeWidth={3}
                 />
+
               </LineChart>
+
             </ResponsiveContainer>
+
           ) : (
-            <p>Loading chart...</p>
+
+            <p>No sales data available for the selected filters.</p>
+
           )}
+
         </div>
+
      </div>
     
 

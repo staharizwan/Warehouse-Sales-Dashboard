@@ -85,15 +85,65 @@ def get_sales_by_item_type():
     
     return result
 
+# Sales trend
+def get_sales_trend(year=None, month=None, item_type=None):
+
+    if year is not None:
+        group_column = "month"
+    else:
+        group_column = "year"
+
+    conditions = []
+    params = []
+
+    if year is not None:
+        conditions.append("year = ?")
+        params.append(year)
+
+    if month is not None:
+        conditions.append("month = ?")
+        params.append(month)
+
+    if item_type is not None:
+        conditions.append("item_type = ?")
+        params.append(item_type)
+
+    query = f"""
+    SELECT
+        {group_column},
+        SUM(warehouse_sales) AS warehouse_sales,
+        SUM(retail_sales) AS retail_sales
+    FROM sales
+    """
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    query += f"""
+    GROUP BY {group_column}
+    ORDER BY {group_column}
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(query, params)
+    result = cursor.fetchall()
+
+    conn.close()
+
+    return result
+
+
 # Temporary tests
 #%% 
+if __name__ == "main":
+    print("KPIs: ")
+    print(get_kpis())
 
-print("KPIs: ")
-print(get_kpis())
+    print("\nYearly Sales: ")
+    print(get_yearly_sales())
 
-print("\nYearly Sales: ")
-print(get_yearly_sales())
-
-print("\nSales by Item Type: ")
-print(get_sales_by_item_type())
+    print("\nSales by Item Type: ")
+    print(get_sales_by_item_type())
 # %%
