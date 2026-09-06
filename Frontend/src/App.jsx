@@ -3,6 +3,8 @@ import "./App.css";
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -17,6 +19,18 @@ function App() {
   const [month, setMonth] = useState("");
   const [itemType, setItemType] = useState("");
   const [yearlySales, setYearlySales] = useState([])
+  const [itemTypeSales, setItemTypeSales] = useState([])
+  const [topSuppliers, setTopSuppliers] = useState([])
+
+  const [loadingKpis, setLoadingKpis] = useState(false);
+  const [loadingTrend, setLoadingTrend] = useState(false);
+  const [loadingItemTypes, setLoadingItemTypes] = useState(false);
+  const [loadingSuppliers, setLoadingSuppliers] = useState(false);
+
+  const [errorKpis, setErrorKpis] = useState("");
+  const [errorTrend, setErrorTrend] = useState("");
+  const [errorItemTypes, setErrorItemTypes] = useState("");
+  const [errorSuppliers, setErrorSuppliers] = useState("");
 
 useEffect(() => {
     const params = new URLSearchParams();
@@ -32,16 +46,28 @@ useEffect(() => {
     if (itemType) {
       params.append("item_type", itemType);
     }
-
+    
+    setLoadingKpis(true);
     const url = `http://127.0.0.1:8000/api/kpis?${params.toString()}`;
+    setErrorKpis("");
+      fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setKpis(data);
+        })
+        .catch(() => {
+          setErrorKpis("Could not load KPI data.");
+        })
+        .finally(() => {
+          setLoadingKpis(false);
+        });
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setKpis(data);
-      });
-
-    }, [year, month, itemType]);
+        }, [year, month, itemType]);
 
 useEffect(() => {
     const params = new URLSearchParams();
@@ -50,7 +76,7 @@ useEffect(() => {
       params.append("year", year);
     }
 
-    if (month) {
+    if (month && !year) {
       params.append("month", month);
     }
 
@@ -60,7 +86,8 @@ useEffect(() => {
 
     const url =
       `http://127.0.0.1:8000/api/sales-trend?${params.toString()}`;
-
+    setLoadingTrend(true);
+    setErrorTrend("");
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -70,22 +97,111 @@ useEffect(() => {
         return response.json();
       })
       .then((data) => {
-        console.log("Sales trend data:", data);
+        //console.log("Sales trend data:", data);
         setYearlySales(data);
       })
-      .catch((error) => {
-        console.error("Sales trend fetch failed:", error);
-        setYearlySales([]);
-      });
+      .catch(() => {
+      setErrorTrend("Could not load sales trend.");
+      setYearlySales([]);
+    })
+    .finally(() => {
+      setLoadingTrend(false);
+    });
 
     }, [year, month, itemType]);
 
-  const formatNumber = (value) => {
-    return Number(value).toLocaleString("en-US", {
-      maximumFractionDigits: 2,
-    });
-  };
 
+useEffect(() => {
+  const params = new URLSearchParams();
+
+  if (year) {
+    params.append("year", year);
+  }
+
+  if (month) {
+    params.append("month", month);
+  }
+
+  const url =
+    `http://127.0.0.1:8000/api/item-type-sales?${params.toString()}`;
+  setLoadingItemTypes(true);
+  setErrorItemTypes("");
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      setItemTypeSales(data);
+    })
+    .catch(() => {
+  setErrorItemTypes("Could not load item type data.");
+    setItemTypeSales([]);
+  })
+  .finally(() => {
+    setLoadingItemTypes(false);
+  });
+
+    }, [year, month]);
+
+useEffect(() => {
+  const params = new URLSearchParams();
+
+  if (year) {
+    params.append("year", year);
+  }
+
+  if (month) {
+    params.append("month", month);
+  }
+
+  if (itemType) {
+    params.append("item_type", itemType);
+  }
+
+  params.append("limit", 10);
+
+  const url =
+    `http://127.0.0.1:8000/api/top-suppliers?${params.toString()}`;
+  
+  setLoadingSuppliers(true);
+  setErrorSuppliers("");
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      setTopSuppliers(data);
+    })
+    .catch(() => {
+    setErrorSuppliers("Could not load supplier data.");
+    setTopSuppliers([]);
+  })
+  .finally(() => {
+    setLoadingSuppliers(false);
+  });
+
+  }, [year, month, itemType]);
+
+
+
+const formatNumber = (value) => {
+      if (value === null || value === undefined) {
+        return "—";
+      }
+
+      return Number(value).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      });
+    };
+    
   return (
     <div className="dashboard">
       <h1>Warehouse & Retail Sales Dashboard</h1>
@@ -172,7 +288,12 @@ useEffect(() => {
       </div>
       <br />
     
-      {kpis ? (
+      {loadingKpis ? (
+          <p>Loading KPI data...</p>
+        ) : errorKpis ? (
+          <p>{errorKpis}</p>
+        ) 
+      : kpis ? (
         
         <div className="kpi-container">
 
@@ -205,7 +326,12 @@ useEffect(() => {
               : "Sales Volume by Year"}
           </h2>
 
-          {yearlySales.length > 0 ? (
+          { loadingTrend ? (
+              <p>Loading sales trend...</p>
+            ) : errorTrend ? (
+              <p>{errorTrend}</p>
+            ) : 
+            yearlySales.length > 0 ? (
 
             <ResponsiveContainer width="100%" height={350}>
 
@@ -215,6 +341,11 @@ useEffect(() => {
 
                 <XAxis
                   dataKey="period"
+                  tick={{
+                    fill: "#e2e8f0",
+                    fontWeight: 500,
+                    fontSize: 20
+                  }}
                   tickFormatter={(value) => {
                     if (year) {
                       const months = [
@@ -231,6 +362,11 @@ useEffect(() => {
                 />
 
                 <YAxis
+                 tick={{
+                    fill: "#e2e8f0",
+                    fontWeight: 500,
+                    fontSize: 20
+                  }}
                   tickFormatter={(value) => {
                     if (Math.abs(value) >= 1000000) {
                       return `${(value / 1000000).toFixed(1)}M`;
@@ -294,8 +430,180 @@ useEffect(() => {
           )}
 
         </div>
+      
 
-     </div>
+      <div className="chart-card">
+
+  <h2>Sales by Item Type</h2>
+
+  {itemTypeSales.length > 0 ? (
+
+    <ResponsiveContainer width="100%" height={400}>
+
+      <BarChart data={itemTypeSales}>
+
+        <CartesianGrid strokeDasharray="3 3" />
+
+        <XAxis
+          dataKey="item_type"
+          tick={{
+            fill: "#e2e8f0",
+            fontWeight: 600,
+            fontSize: 12
+          }}
+        />
+
+        <YAxis
+          tick={{
+            fill: "#e2e8f0",
+            fontWeight: 600,
+            fontSize: 13
+          }}
+          tickFormatter={(value) => {
+            if (Math.abs(value) >= 1000000) {
+              return `${(value / 1000000).toFixed(1)}M`;
+            }
+
+            if (Math.abs(value) >= 1000) {
+              return `${(value / 1000).toFixed(0)}K`;
+            }
+
+            return value;
+          }}
+        />
+
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "#1e293b",
+            border: "1px solid #475569",
+            borderRadius: "8px",
+            color: "#f8fafc",
+          }}
+          labelStyle={{
+            color: "#f8fafc",
+            fontWeight: "600",
+          }}
+          formatter={(value) =>
+            `${Number(value).toLocaleString("en-US", {
+              maximumFractionDigits: 2,
+            })} cases`
+          }
+        />
+
+        <Legend />
+
+        <Bar
+          dataKey="warehouse_sales"
+          name="Warehouse Sales"
+          fill="#38bdf8"
+        />
+
+        <Bar
+          dataKey="retail_sales"
+          name="Retail Sales"
+          fill="#14b8a6"
+        />
+
+      </BarChart>
+
+    </ResponsiveContainer>
+
+  ) : (
+
+    <p>No item type data available.</p>
+
+  )}
+
+</div>
+      <div className="chart-card">
+
+        <h2>Top 10 Suppliers by Sales Volume</h2>
+
+        {loadingSuppliers ? (
+            <p>Loading supplier data...</p>
+          ) : errorSuppliers ? (
+            <p>{errorSuppliers}</p>
+          ) : 
+          topSuppliers.length > 0 ? (
+
+          <ResponsiveContainer width="100%" height={500}>
+
+            <BarChart
+              data={topSuppliers}
+              layout="vertical"
+              margin={{ left: 40 }}
+            >
+
+              <CartesianGrid strokeDasharray="3 3" />
+
+              <XAxis
+                type="number"
+                tick={{
+                  fill: "#e2e8f0",
+                  fontWeight: 500,
+                  fontSize: 13
+                }}
+                tickFormatter={(value) => {
+                  if (Math.abs(value) >= 1000000) {
+                    return `${(value / 1000000).toFixed(1)}M`;
+                  }
+
+                  if (Math.abs(value) >= 1000) {
+                    return `${(value / 1000).toFixed(0)}K`;
+                  }
+
+                  return value;
+                }}
+              />
+
+              <YAxis
+                type="category"
+                dataKey="supplier"
+                width={180}
+                tick={{
+                  fill: "#e2e8f0",
+                  fontWeight: 500,
+                  fontSize: 12
+                }}
+              />
+
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#1e293b",
+                  border: "1px solid #475569",
+                  borderRadius: "8px",
+                  color: "#f8fafc",
+                }}
+                labelStyle={{
+                  color: "#f8fafc",
+                  fontWeight: "600",
+                }}
+                formatter={(value) =>
+                  `${Number(value).toLocaleString("en-US", {
+                    maximumFractionDigits: 2,
+                  })} cases`
+                }
+              />
+
+              <Bar
+                dataKey="total_sales"
+                name="Total Sales"
+                fill="#38bdf8"
+              />
+
+            </BarChart>
+
+          </ResponsiveContainer>
+
+        ) : (
+
+          <p>No supplier data available for the selected filters.</p>
+
+        )}
+
+      </div>
+
+    </div>
     
 
     </div>
