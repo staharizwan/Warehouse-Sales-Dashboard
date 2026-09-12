@@ -3,8 +3,8 @@ from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from Backend.queries import(
     get_kpis,
-    get_sales_by_item_type,
-    get_yearly_sales,
+    #get_sales_by_item_type,
+    #get_yearly_sales,
     get_sales_trend,
     get_item_type_sales,
     get_top_suppliers
@@ -51,6 +51,7 @@ def kpis(year:Optional[int] = None,
         "total_retail_transfers" : result[2]
     }
     
+''' 
 @app.get("/api/yearly-sales")
 def yearly_sales():
     result = get_yearly_sales()
@@ -64,7 +65,8 @@ def yearly_sales():
         
         for row in result
     ]
-    
+'''
+'''
 @app.get("/api/item-types")
 def item_types():
     result = get_sales_by_item_type()
@@ -77,7 +79,8 @@ def item_types():
         }
         for row in result
     ]
-    
+'''
+   
 @app.get("/api/sales-trend")
 def sales_trend(
     year: Optional[int] = None,

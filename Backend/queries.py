@@ -185,6 +185,7 @@ def get_top_suppliers(year=None, month=None, item_type=None, limit=10):
 
     if month is not None:
         conditions.append("month = ?")
+        params.append(month)
 
     if item_type is not None:
         conditions.append("item_type = ?")
@@ -193,7 +194,10 @@ def get_top_suppliers(year=None, month=None, item_type=None, limit=10):
     query = """
     SELECT
         supplier,
-        SUM(warehouse_sales + retail_sales) AS total_sales
+        SUM(
+            COALESCE(warehouse_sales, 0) + 
+            COALESCE(retail_sales, 0)
+        ) AS total_sales   
     FROM sales
     """
 
@@ -219,7 +223,7 @@ def get_top_suppliers(year=None, month=None, item_type=None, limit=10):
 
 
 
-
+'''
 
 # Temporary tests
 #%% 
@@ -237,3 +241,4 @@ if __name__ == "__main__":
     
     print("X")
 # %%
+'''

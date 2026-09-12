@@ -440,7 +440,11 @@ const formatNumber = (value) => {
 
   <h2>Sales by Item Type</h2>
 
-  {itemTypeSales.length > 0 ? (
+  {loadingItemTypes ? (
+  <p>Loading item type data...</p>
+) : errorItemTypes ? (
+  <p>{errorItemTypes}</p>
+) : itemTypeSales.length > 0 ? (
 
     <ResponsiveContainer width="100%" height={400}>
 
