@@ -34,7 +34,7 @@ function App() {
 
 useEffect(() => {
     const params = new URLSearchParams();
-    const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
+    const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
     if (year) {
       params.append("year", year);
@@ -72,7 +72,7 @@ useEffect(() => {
 
 useEffect(() => {
     const params = new URLSearchParams();
-    const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
+    const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
     if (year) {
       params.append("year", year);
@@ -115,7 +115,7 @@ useEffect(() => {
 
 useEffect(() => {
   const params = new URLSearchParams();
-  const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
+  const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
   if (year) {
     params.append("year", year);
@@ -152,7 +152,7 @@ useEffect(() => {
 
 useEffect(() => {
   const params = new URLSearchParams();
-  const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
+  const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
   if (year) {
     params.append("year", year);
