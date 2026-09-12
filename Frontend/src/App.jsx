@@ -34,6 +34,7 @@ function App() {
 
 useEffect(() => {
     const params = new URLSearchParams();
+    const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
 
     if (year) {
       params.append("year", year);
@@ -48,7 +49,7 @@ useEffect(() => {
     }
     
     setLoadingKpis(true);
-    const url = `http://127.0.0.1:8000/api/kpis?${params.toString()}`;
+    const url = `${API_BASE_URL}/api/kpis?${params.toString()}`;
     setErrorKpis("");
       fetch(url)
         .then((response) => {
@@ -71,6 +72,7 @@ useEffect(() => {
 
 useEffect(() => {
     const params = new URLSearchParams();
+    const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
 
     if (year) {
       params.append("year", year);
@@ -85,7 +87,7 @@ useEffect(() => {
     }
 
     const url =
-      `http://127.0.0.1:8000/api/sales-trend?${params.toString()}`;
+      `${API_BASE_URL}/api/sales-trend?${params.toString()}`;
     setLoadingTrend(true);
     setErrorTrend("");
     fetch(url)
@@ -113,6 +115,7 @@ useEffect(() => {
 
 useEffect(() => {
   const params = new URLSearchParams();
+  const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
 
   if (year) {
     params.append("year", year);
@@ -123,7 +126,7 @@ useEffect(() => {
   }
 
   const url =
-    `http://127.0.0.1:8000/api/item-type-sales?${params.toString()}`;
+    `${API_BASE_URL}api/item-type-sales?${params.toString()}`;
   setLoadingItemTypes(true);
   setErrorItemTypes("");
   fetch(url)
@@ -149,6 +152,7 @@ useEffect(() => {
 
 useEffect(() => {
   const params = new URLSearchParams();
+  const API_BASE_URL = "https://your-fastapi-backend.onrender.com";
 
   if (year) {
     params.append("year", year);
@@ -165,7 +169,7 @@ useEffect(() => {
   params.append("limit", 10);
 
   const url =
-    `http://127.0.0.1:8000/api/top-suppliers?${params.toString()}`;
+    `${API_BASE_URL}api/top-suppliers?${params.toString()}`;
   
   setLoadingSuppliers(true);
   setErrorSuppliers("");
