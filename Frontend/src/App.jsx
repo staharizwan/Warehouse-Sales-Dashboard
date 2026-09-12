@@ -34,7 +34,7 @@ function App() {
 
 useEffect(() => {
     const params = new URLSearchParams();
-    const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
+    //const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
     if (year) {
       params.append("year", year);
@@ -49,7 +49,7 @@ useEffect(() => {
     }
     
     setLoadingKpis(true);
-    const url = `${API_BASE_URL}/api/kpis?${params.toString()}`;
+    const url = `/api/kpis?${params.toString()}`;
     setErrorKpis("");
       fetch(url)
         .then((response) => {
@@ -72,7 +72,7 @@ useEffect(() => {
 
 useEffect(() => {
     const params = new URLSearchParams();
-    const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
+    //const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
     if (year) {
       params.append("year", year);
@@ -87,7 +87,7 @@ useEffect(() => {
     }
 
     const url =
-      `${API_BASE_URL}/api/sales-trend?${params.toString()}`;
+      `/api/sales-trend?${params.toString()}`;
     setLoadingTrend(true);
     setErrorTrend("");
     fetch(url)
@@ -115,7 +115,7 @@ useEffect(() => {
 
 useEffect(() => {
   const params = new URLSearchParams();
-  const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
+  //const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
   if (year) {
     params.append("year", year);
@@ -126,7 +126,7 @@ useEffect(() => {
   }
 
   const url =
-    `${API_BASE_URL}api/item-type-sales?${params.toString()}`;
+    `/api/item-type-sales?${params.toString()}`;
   setLoadingItemTypes(true);
   setErrorItemTypes("");
   fetch(url)
@@ -152,7 +152,7 @@ useEffect(() => {
 
 useEffect(() => {
   const params = new URLSearchParams();
-  const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
+  //const API_BASE_URL = "https://warehouse-sales-dashboard-blond.vercel.app";
 
   if (year) {
     params.append("year", year);
@@ -169,7 +169,7 @@ useEffect(() => {
   params.append("limit", 10);
 
   const url =
-    `${API_BASE_URL}api/top-suppliers?${params.toString()}`;
+    `/api/top-suppliers?${params.toString()}`;
   
   setLoadingSuppliers(true);
   setErrorSuppliers("");
