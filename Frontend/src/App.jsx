@@ -322,7 +322,9 @@ const formatNumber = (value) => {
         <p>Loading dashboard...</p>
       )}
       </div>
-
+    <br />
+    <br />
+    <br />
      <div className="scroll-section">
        <div className="chart-card">
 
