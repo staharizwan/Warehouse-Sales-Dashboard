@@ -208,6 +208,7 @@ const formatNumber = (value) => {
     
   return (
     <div className="dashboard">
+      <div className="fixed-section">
       <h1>Warehouse & Retail Sales Dashboard</h1>
       <p className="subtitle">
         <br></br>
@@ -320,8 +321,9 @@ const formatNumber = (value) => {
       ) : (
         <p>Loading dashboard...</p>
       )}
+      </div>
 
-     <div>
+     <div className="scroll-section">
        <div className="chart-card">
 
           <h2>

@@ -258,3 +258,20 @@
     flex-direction: column;
   }
 }
+
+.dashboard {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fixed-section {
+  flex-shrink: 0;
+}
+
+.scroll-section {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
