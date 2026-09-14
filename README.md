@@ -1,8 +1,13 @@
 # Warehouse & Retail Sales Dashboard
+**Python · Pandas · SQL · SQLite · FastAPI · React · Recharts · Vercel**
 
 A full-stack data analytics dashboard for exploring warehouse and retail sales data through interactive filters and visualizations.
 
 The project demonstrates an end-to-end analytics workflow, from raw CSV data and SQL-based aggregation to a FastAPI REST API and an interactive React dashboard.
+
+## Dashboard Preview
+
+![Warehouse & Retail Sales Dashboard](./docs/screenshot1.png)
 
 ## Live Demo
 
@@ -99,8 +104,8 @@ The original dataset is provided by Montgomery County, Maryland and contains sal
 
 Dataset source:
 
-- Montgomery County Open Data — Warehouse and Retail Sales
-- Kaggle — Warehouse and Retail Sales
+- [Montgomery County Open Data — Warehouse and Retail Sales](https://data.montgomerycountymd.gov/Community-Recreation/Warehouse-and-Retail-Sales/v76h-r7br/data)
+- [Kaggle — Warehouse and Retail Sales](https://www.kaggle.com/datasets/lalit7881/warehouse-and-retail-sales/data)
 
 ### Data Notes
 
