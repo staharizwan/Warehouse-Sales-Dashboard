@@ -307,6 +307,7 @@ From the `Frontend` directory:
 npm install
 npm run dev
 ```
+During local development, Vite proxies `/api` requests to the FastAPI backend running at `http://127.0.0.1:8000`.
 
 The development frontend will normally be available at:
 
@@ -333,7 +334,7 @@ The SQLite database is bundled with the application and used as a read-only anal
 
 This project demonstrates practical experience with:
 
-- Data cleaning and transformation with Pandas
+- Data inspection, preprocessing, and transformation with Pandas
 - Relational data storage with SQLite
 - SQL aggregation, grouping, filtering, and parameterized queries
 - REST API development with FastAPI
